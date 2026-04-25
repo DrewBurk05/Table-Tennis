@@ -2,43 +2,259 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Table Tennis Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏓 Table Tennis Pro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- MAIN MENU SCREEN -->
+    <div id="menu-screen" class="screen active">
+        <div class="menu-container">
+            <h1 class="title">🏓 TABLE TENNIS PRO</h1>
+            <p class="subtitle">Master the Game</p>
+            
+            <div class="menu-buttons">
+                <button class="menu-btn primary" onclick="startGame()">
+                    🎮 Play Game
+                </button>
+                <button class="menu-btn" onclick="openCustomization()">
+                    👤 Customize
+                </button>
+                <button class="menu-btn" onclick="openShop()">
+                    🛒 Paddle Shop
+                </button>
+                <button class="menu-btn" onclick="openStats()">
+                    📊 Statistics
+                </button>
+            </div>
 
-<div id="menu">
-    <h1>TABLE TENNIS PRO</h1>
+            <div class="coin-display">
+                💰 Coins: <span id="coins-display">0</span>
+            </div>
+        </div>
+    </div>
 
-    <label>Difficulty:</label>
-    <select id="difficulty">
-        <option value="beginner">Beginner</option>
-        <option value="intermediate">Intermediate</option>
-        <option value="advanced">Advanced</option>
-        <option value="pro">Pro Tour</option>
-    </select>
+    <!-- DIFFICULTY SELECTION SCREEN -->
+    <div id="difficulty-screen" class="screen">
+        <div class="difficulty-container">
+            <h2>Select Difficulty</h2>
+            
+            <div class="difficulty-buttons">
+                <button class="difficulty-btn beginner" onclick="startGameWithDifficulty('beginner')">
+                    <span class="emoji">🌱</span>
+                    <span class="label">Beginner</span>
+                    <span class="desc">Slow & Easy</span>
+                </button>
+                <button class="difficulty-btn intermediate" onclick="startGameWithDifficulty('intermediate')">
+                    <span class="emoji">🎮</span>
+                    <span class="label">Intermediate</span>
+                    <span class="desc">Balanced</span>
+                </button>
+                <button class="difficulty-btn advanced" onclick="startGameWithDifficulty('advanced')">
+                    <span class="emoji">⚡</span>
+                    <span class="label">Advanced</span>
+                    <span class="desc">Fast & Smart</span>
+                </button>
+                <button class="difficulty-btn expert" onclick="startGameWithDifficulty('expert')">
+                    <span class="emoji">🔥</span>
+                    <span class="label">Expert</span>
+                    <span class="desc">Extreme Challenge</span>
+                </button>
+            </div>
 
-    <label>Paddle Skin:</label>
-    <select id="paddleSkin">
-        <option value="wood">Wood</option>
-        <option value="carbon">Carbon</option>
-        <option value="neon">Neon</option>
-        <option value="pro">Pro Tour</option>
-    </select>
+            <button class="back-btn" onclick="goToMenu()">← Back</button>
+        </div>
+    </div>
 
-    <label>Player Avatar:</label>
-    <select id="avatar">
-        <option value="classic">Classic</option>
-        <option value="robot">Robot</option>
-        <option value="shadow">Shadow</option>
-        <option value="neon">Neon</option>
-    </select>
+    <!-- CUSTOMIZATION SCREEN -->
+    <div id="customization-screen" class="screen">
+        <div class="customization-container">
+            <h2>Customize Your Player</h2>
+            
+            <div class="customization-section">
+                <h3>👤 Player Name</h3>
+                <input type="text" id="player-name" placeholder="Enter your name" maxlength="20">
+            </div>
 
-    <button id="startBtn">Start Game</button>
-</div>
+            <div class="customization-section">
+                <h3>😊 Avatar</h3>
+                <div class="avatar-options">
+                    <button class="avatar-option" onclick="selectAvatar(0)">👨</button>
+                    <button class="avatar-option" onclick="selectAvatar(1)">👩</button>
+                    <button class="avatar-option" onclick="selectAvatar(2)">🧑</button>
+                    <button class="avatar-option" onclick="selectAvatar(3)">🥷</button>
+                </div>
+            </div>
 
-<canvas id="gameCanvas" width="900" height="500"></canvas>
+            <div class="customization-section">
+                <h3>🎨 Paddle Color</h3>
+                <input type="color" id="paddle-color" onchange="updatePaddleColor()">
+            </div>
 
-<script src="game.js"></script>
+            <div class="button-group">
+                <button class="btn primary" onclick="saveCustomization()">Save & Play</button>
+                <button class="btn" onclick="showScreen('menu-screen')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PADDLE SHOP SCREEN -->
+    <div id="shop-screen" class="screen">
+        <div class="shop-container">
+            <h2>🛒 Paddle Shop</h2>
+            
+            <div class="coins-header">
+                💰 Your Coins: <span id="coins-display">0</span>
+            </div>
+
+            <div class="paddle-grid">
+                <div class="paddle-card">
+                    <h4>Standard</h4>
+                    <p class="stats">Speed: ⭐⭐⭐ | Spin: ⭐⭐⭐</p>
+                    <p class="price">Free</p>
+                    <button class="paddle-btn equipped" data-paddle="standard" disabled>✓ Equipped</button>
+                </div>
+
+                <div class="paddle-card">
+                    <h4>Power Shot</h4>
+                    <p class="stats">Speed: ⭐⭐⭐⭐⭐ | Spin: ⭐⭐</p>
+                    <p class="price">500 💰</p>
+                    <button class="paddle-btn available" data-paddle="power" onclick="buyPaddle('power')">Buy</button>
+                </div>
+
+                <div class="paddle-card">
+                    <h4>Spin Master</h4>
+                    <p class="stats">Speed: ⭐⭐ | Spin: ⭐⭐⭐⭐⭐</p>
+                    <p class="price">750 💰</p>
+                    <button class="paddle-btn available" data-paddle="spin" onclick="buyPaddle('spin')">Buy</button>
+                </div>
+
+                <div class="paddle-card">
+                    <h4>Elite Pro</h4>
+                    <p class="stats">Speed: ⭐⭐⭐⭐ | Spin: ⭐⭐⭐⭐</p>
+                    <p class="price">1000 💰</p>
+                    <button class="paddle-btn available" data-paddle="elite" onclick="buyPaddle('elite')">Buy</button>
+                </div>
+
+                <div class="paddle-card">
+                    <h4>Quantum Leap</h4>
+                    <p class="stats">Speed: ⭐⭐⭐⭐⭐ | Spin: ⭐⭐⭐⭐⭐</p>
+                    <p class="price">2000 💰</p>
+                    <button class="paddle-btn available" data-paddle="quantum" onclick="buyPaddle('quantum')">Buy</button>
+                </div>
+            </div>
+
+            <button class="back-btn" onclick="showScreen('menu-screen')">← Back</button>
+        </div>
+    </div>
+
+    <!-- STATISTICS SCREEN -->
+    <div id="stats-screen" class="screen">
+        <div class="stats-container">
+            <h2>📊 Your Statistics</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h4>Total Games</h4>
+                    <p class="stat-value" id="stat-total-games">0</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Wins</h4>
+                    <p class="stat-value green" id="stat-wins">0</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Losses</h4>
+                    <p class="stat-value red" id="stat-losses">0</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Win Rate</h4>
+                    <p class="stat-value blue" id="stat-winrate">0%</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Total Points</h4>
+                    <p class="stat-value" id="stat-total-points">0</p>
+                </div>
+                <div class="stat-card">
+                    <h4>Best Difficulty</h4>
+                    <p class="stat-value" id="stat-best-difficulty">None</p>
+                </div>
+            </div>
+
+            <h3>Performance by Difficulty</h3>
+            <div class="difficulty-breakdown" id="difficulty-breakdown"></div>
+
+            <div class="button-group">
+                <button class="btn" onclick="resetStats()">Reset Stats</button>
+                <button class="btn primary" onclick="showScreen('menu-screen')">Back to Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GAME SCREEN -->
+    <div id="game-screen" class="screen">
+        <div class="game-hud">
+            <div class="hud-left">
+                <span id="player-avatar">👨</span>
+                <span id="game-player-name">Player</span>
+            </div>
+            <div class="hud-center">
+                <div class="score-board">
+                    <div class="score-item">
+                        <span id="player-score">0</span>
+                    </div>
+                    <div class="score-divider">vs</div>
+                    <div class="score-item">
+                        <span id="ai-score">0</span>
+                    </div>
+                </div>
+                <p id="difficulty-display">Difficulty: 🌱 Beginner</p>
+                <p id="paddle-display">Paddle: Standard</p>
+            </div>
+            <div class="hud-right">
+                <span id="ai-difficulty">AI (🌱 Beginner)</span>
+                🤖
+            </div>
+        </div>
+
+        <canvas id="game-canvas" width="1000" height="600"></canvas>
+
+        <div id="pause-menu" class="pause-menu hidden">
+            <h2>PAUSED</h2>
+            <button onclick="togglePause()">Resume</button>
+            <button onclick="goToMenu()">Back to Menu</button>
+        </div>
+
+        <p id="pause-text" class="pause-text">Press SPACE to Pause</p>
+    </div>
+
+    <!-- GAME OVER SCREEN -->
+    <div id="game-over-screen" class="game-over-screen hidden">
+        <div class="game-over-content">
+            <h2 id="game-over-title">🎉 You Won!</h2>
+            
+            <div class="final-score">
+                <div class="final-score-item">
+                    <span class="label">You</span>
+                    <span class="score" id="final-player-score">0</span>
+                </div>
+                <div class="vs">vs</div>
+                <div class="final-score-item">
+                    <span class="label">AI</span>
+                    <span class="score" id="final-ai-score">0</span>
+                </div>
+            </div>
+
+            <div class="coins-earned">
+                💰 Earned: <span id="coins-earned">0</span> coins
+            </div>
+
+            <div class="button-group">
+                <button class="btn primary" onclick="playAgain()">Play Again</button>
+                <button class="btn" onclick="goToMenu()">Back to Menu</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
 </body>
 </html>
