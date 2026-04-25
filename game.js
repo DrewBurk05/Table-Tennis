@@ -110,32 +110,33 @@ const GAME_RULES = {
 };
 
 // ==================== CANVAS SETUP ====================
-const canvas = document.getElementById('game-canvas');
-const ctx = canvas.getContext('2d');
+let canvas = null;
+let ctx = null;
+let animationId = null;
 
 // ==================== GAME OBJECTS ====================
 let playerPaddle = {
     x: 20,
-    y: GAME_RULES.tableHeight / 2 - GAME_RULES.paddleHeight / 2,
-    width: GAME_RULES.paddleWidth,
-    height: GAME_RULES.paddleHeight,
+    y: 250,
+    width: 12,
+    height: 100,
     velocityY: 0,
     maxSpeed: 8
 };
 
 let aiPaddle = {
-    x: GAME_RULES.tableWidth - GAME_RULES.paddleWidth - 20,
-    y: GAME_RULES.tableHeight / 2 - GAME_RULES.paddleHeight / 2,
-    width: GAME_RULES.paddleWidth,
-    height: GAME_RULES.paddleHeight,
+    x: 968,
+    y: 250,
+    width: 12,
+    height: 100,
     velocityY: 0,
     maxSpeed: 8
 };
 
 let ball = {
-    x: GAME_RULES.tableWidth / 2,
-    y: GAME_RULES.tableHeight / 2,
-    radius: GAME_RULES.ballRadius,
+    x: 500,
+    y: 300,
+    radius: 8,
     velocityX: 4,
     velocityY: 0,
     spin: 0,
@@ -144,8 +145,8 @@ let ball = {
 
 let aiState = {
     lastReactionTime: 0,
-    predictedBallY: ball.y,
-    targetY: aiPaddle.y + aiPaddle.height / 2
+    predictedBallY: 300,
+    targetY: 300
 };
 
 // ==================== INPUT HANDLING ====================
@@ -169,6 +170,7 @@ document.addEventListener('keyup', (e) => {
 // Mouse movement for paddle control
 document.addEventListener('mousemove', (e) => {
     if (!gameState.gameActive || gameState.gamePaused) return;
+    if (!canvas) return;
     
     const rect = canvas.getBoundingClientRect();
     const mouseY = e.clientY - rect.top;
@@ -402,13 +404,18 @@ function saveGameState() {
 function loadGameState() {
     const saved = localStorage.getItem('tableTennisState');
     if (saved) {
-        Object.assign(gameState, JSON.parse(saved));
-        updateUIWithStats();
+        try {
+            Object.assign(gameState, JSON.parse(saved));
+        } catch (e) {
+            console.log('Could not load saved state');
+        }
     }
 }
 
 // ==================== RENDERING ====================
 function drawGame() {
+    if (!ctx) return;
+
     // Clear canvas
     ctx.fillStyle = '#16213e';
     ctx.fillRect(0, 0, GAME_RULES.tableWidth, GAME_RULES.tableHeight);
@@ -481,13 +488,13 @@ function drawBall() {
 }
 
 function updateScoreDisplay() {
-    document.getElementById('player-score').textContent = gameState.player.score;
-    document.getElementById('ai-score').textContent = gameState.ai.score;
+    const playerScoreEl = document.getElementById('player-score');
+    const aiScoreEl = document.getElementById('ai-score');
+    if (playerScoreEl) playerScoreEl.textContent = gameState.player.score;
+    if (aiScoreEl) aiScoreEl.textContent = gameState.ai.score;
 }
 
 // ==================== GAME LOOP ====================
-let difficulty;
-
 function gameLoop() {
     if (gameState.gameActive && !gameState.gamePaused) {
         updatePlayerPaddle();
@@ -497,7 +504,9 @@ function gameLoop() {
 
     drawGame();
 
-    requestAnimationFrame(gameLoop);
+    if (gameState.gameActive) {
+        animationId = requestAnimationFrame(gameLoop);
+    }
 }
 
 // ==================== UI FUNCTIONS ====================
@@ -505,7 +514,10 @@ function showScreen(screenId) {
     document.querySelectorAll('.screen').forEach(screen => {
         screen.classList.remove('active');
     });
-    document.getElementById(screenId).classList.add('active');
+    const screen = document.getElementById(screenId);
+    if (screen) {
+        screen.classList.add('active');
+    }
 }
 
 function startGame() {
@@ -513,35 +525,88 @@ function startGame() {
 }
 
 function startGameWithDifficulty(difficultyLevel) {
-    difficulty = DIFFICULTY_SETTINGS[difficultyLevel];
+    // Setup canvas
+    canvas = document.getElementById('game-canvas');
+    ctx = canvas.getContext('2d');
+    
+    if (!canvas || !ctx) {
+        console.error('Canvas not found!');
+        alert('Error: Canvas not found. Please reload the page.');
+        return;
+    }
+
+    const difficulty = DIFFICULTY_SETTINGS[difficultyLevel];
     gameState.ai.difficulty = difficultyLevel;
 
-    // Reset scores
+    // Reset game state
     gameState.player.score = 0;
     gameState.ai.score = 0;
     gameState.gameActive = true;
     gameState.gamePaused = false;
     gameState.gameOver = false;
 
-    // Initialize ball
+    // Reset paddles and ball
+    playerPaddle = {
+        x: 20,
+        y: GAME_RULES.tableHeight / 2 - GAME_RULES.paddleHeight / 2,
+        width: GAME_RULES.paddleWidth,
+        height: GAME_RULES.paddleHeight,
+        velocityY: 0,
+        maxSpeed: 8
+    };
+
+    aiPaddle = {
+        x: GAME_RULES.tableWidth - GAME_RULES.paddleWidth - 20,
+        y: GAME_RULES.tableHeight / 2 - GAME_RULES.paddleHeight / 2,
+        width: GAME_RULES.paddleWidth,
+        height: GAME_RULES.paddleHeight,
+        velocityY: 0,
+        maxSpeed: 8
+    };
+
     resetBall();
 
     // Update UI
-    document.getElementById('game-player-name').textContent = gameState.player.name;
-    document.getElementById('player-avatar').textContent = ['👨', '👩', '🧑', '🥷'][gameState.player.avatar];
-    document.getElementById('ai-difficulty').textContent = `AI (${difficulty.label})`;
-    document.getElementById('difficulty-display').textContent = `Difficulty: ${difficulty.label}`;
-    document.getElementById('paddle-display').textContent = `Paddle: ${PADDLE_SPECS[gameState.player.paddleType].name}`;
+    const playerNameEl = document.getElementById('game-player-name');
+    const avatarEl = document.getElementById('player-avatar');
+    const aiDiffEl = document.getElementById('ai-difficulty');
+    const diffDisplayEl = document.getElementById('difficulty-display');
+    const paddleDisplayEl = document.getElementById('paddle-display');
+
+    if (playerNameEl) playerNameEl.textContent = gameState.player.name;
+    if (avatarEl) avatarEl.textContent = ['👨', '👩', '🧑', '🥷'][gameState.player.avatar];
+    if (aiDiffEl) aiDiffEl.textContent = `AI (${difficulty.label})`;
+    if (diffDisplayEl) diffDisplayEl.textContent = `Difficulty: ${difficulty.label}`;
+    if (paddleDisplayEl) paddleDisplayEl.textContent = `Paddle: ${PADDLE_SPECS[gameState.player.paddleType].name}`;
+    
     updateScoreDisplay();
 
+    // Hide pause menu and game over screen
+    const pauseMenu = document.getElementById('pause-menu');
+    const gameOverScreen = document.getElementById('game-over-screen');
+    if (pauseMenu) pauseMenu.classList.add('hidden');
+    if (gameOverScreen) gameOverScreen.classList.add('hidden');
+
+    // Show game screen
     showScreen('game-screen');
+
+    // Start game loop
+    if (animationId) {
+        cancelAnimationFrame(animationId);
+    }
     gameLoop();
 }
 
 function togglePause() {
     gameState.gamePaused = !gameState.gamePaused;
-    document.getElementById('pause-menu').classList.toggle('hidden');
-    document.getElementById('pause-text').textContent = gameState.gamePaused ? 'Paused' : 'Press SPACE to Pause';
+    const pauseMenu = document.getElementById('pause-menu');
+    if (pauseMenu) {
+        pauseMenu.classList.toggle('hidden');
+    }
+    const pauseText = document.getElementById('pause-text');
+    if (pauseText) {
+        pauseText.textContent = gameState.gamePaused ? 'Paused' : 'Press SPACE to Pause';
+    }
 }
 
 function showGameOverScreen(playerWon) {
@@ -553,29 +618,46 @@ function showGameOverScreen(playerWon) {
         expert: 500
     }[gameState.ai.difficulty] : 0;
 
-    document.getElementById('game-over-title').textContent = title;
-    document.getElementById('final-player-score').textContent = gameState.player.score;
-    document.getElementById('final-ai-score').textContent = gameState.ai.score;
-    document.getElementById('coins-earned').textContent = coinsEarned;
+    const titleEl = document.getElementById('game-over-title');
+    const playerScoreEl = document.getElementById('final-player-score');
+    const aiScoreEl = document.getElementById('final-ai-score');
+    const coinsEl = document.getElementById('coins-earned');
 
-    document.getElementById('game-over-screen').classList.remove('hidden');
+    if (titleEl) titleEl.textContent = title;
+    if (playerScoreEl) playerScoreEl.textContent = gameState.player.score;
+    if (aiScoreEl) aiScoreEl.textContent = gameState.ai.score;
+    if (coinsEl) coinsEl.textContent = coinsEarned;
+
+    const gameOverScreen = document.getElementById('game-over-screen');
+    if (gameOverScreen) {
+        gameOverScreen.classList.remove('hidden');
+    }
 }
 
 function playAgain() {
-    document.getElementById('game-over-screen').classList.add('hidden');
+    const gameOverScreen = document.getElementById('game-over-screen');
+    if (gameOverScreen) gameOverScreen.classList.add('hidden');
     startGame();
 }
 
 function goToMenu() {
     gameState.gameActive = false;
-    document.getElementById('pause-menu').classList.add('hidden');
-    document.getElementById('game-over-screen').classList.add('hidden');
+    if (animationId) {
+        cancelAnimationFrame(animationId);
+    }
+    const pauseMenu = document.getElementById('pause-menu');
+    const gameOverScreen = document.getElementById('game-over-screen');
+    if (pauseMenu) pauseMenu.classList.add('hidden');
+    if (gameOverScreen) gameOverScreen.classList.add('hidden');
     showScreen('menu-screen');
 }
 
 function openCustomization() {
-    document.getElementById('player-name').value = gameState.player.name;
-    document.getElementById('paddle-color').value = gameState.player.paddleColor;
+    const nameInput = document.getElementById('player-name');
+    const colorInput = document.getElementById('paddle-color');
+    
+    if (nameInput) nameInput.value = gameState.player.name;
+    if (colorInput) colorInput.value = gameState.player.paddleColor;
     
     document.querySelectorAll('.avatar-option').forEach((el, i) => {
         el.classList.toggle('selected', i === gameState.player.avatar);
@@ -585,8 +667,10 @@ function openCustomization() {
 }
 
 function saveCustomization() {
-    gameState.player.name = document.getElementById('player-name').value || 'Player';
-    gameState.player.paddleColor = document.getElementById('paddle-color').value;
+    const nameInput = document.getElementById('player-name');
+    if (nameInput) {
+        gameState.player.name = nameInput.value || 'Player';
+    }
     saveGameState();
     showScreen('menu-screen');
 }
@@ -599,8 +683,10 @@ function selectAvatar(index) {
 }
 
 function updatePaddleColor() {
-    const color = document.getElementById('paddle-color').value;
-    gameState.player.paddleColor = color;
+    const colorInput = document.getElementById('paddle-color');
+    if (colorInput) {
+        gameState.player.paddleColor = colorInput.value;
+    }
 }
 
 function selectPaddle(paddleType) {
@@ -627,7 +713,10 @@ function buyPaddle(paddleType) {
 }
 
 function updatePaddleShopUI() {
-    document.getElementById('coins-display').textContent = gameState.coins;
+    const coinsDisplay = document.getElementById('coins-display');
+    if (coinsDisplay) {
+        coinsDisplay.textContent = gameState.coins;
+    }
 
     const paddleTypes = ['standard', 'power', 'spin', 'elite', 'quantum'];
     
@@ -669,11 +758,18 @@ function updateUIWithStats() {
         ? Math.round((gameState.stats.wins / gameState.stats.totalGames) * 100) 
         : 0;
 
-    document.getElementById('stat-total-games').textContent = gameState.stats.totalGames;
-    document.getElementById('stat-wins').textContent = gameState.stats.wins;
-    document.getElementById('stat-losses').textContent = gameState.stats.losses;
-    document.getElementById('stat-winrate').textContent = winRate + '%';
-    document.getElementById('stat-total-points').textContent = gameState.stats.totalPoints;
+    const elements = {
+        'stat-total-games': gameState.stats.totalGames,
+        'stat-wins': gameState.stats.wins,
+        'stat-losses': gameState.stats.losses,
+        'stat-winrate': winRate + '%',
+        'stat-total-points': gameState.stats.totalPoints
+    };
+
+    Object.entries(elements).forEach(([id, value]) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value;
+    });
 
     // Best difficulty
     let bestDifficulty = 'None';
@@ -684,7 +780,8 @@ function updateUIWithStats() {
             bestDifficulty = DIFFICULTY_SETTINGS[diff].label;
         }
     }
-    document.getElementById('stat-best-difficulty').textContent = bestDifficulty;
+    const bestEl = document.getElementById('stat-best-difficulty');
+    if (bestEl) bestEl.textContent = bestDifficulty;
 
     // Difficulty breakdown
     const breakdownHTML = Object.entries(gameState.stats.byDifficulty)
@@ -694,7 +791,8 @@ function updateUIWithStats() {
                 <p>Wins: ${stats.wins} | Losses: ${stats.losses}</p>
             </div>
         `).join('');
-    document.getElementById('difficulty-breakdown').innerHTML = breakdownHTML;
+    const breakdownEl = document.getElementById('difficulty-breakdown');
+    if (breakdownEl) breakdownEl.innerHTML = breakdownHTML;
 
     updatePaddleShopUI();
 }
@@ -727,5 +825,4 @@ window.addEventListener('load', () => {
     loadGameState();
     updateUIWithStats();
     showScreen('menu-screen');
-    gameLoop();
 });
