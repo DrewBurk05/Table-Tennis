@@ -2,55 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Table Tennis Game</title>
+    <title>Table Tennis Pro</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <div id="menu" class="menu active">
-            <div class="menu-content">
-                <h1>🏓 Table Tennis</h1>
-                <p>Select Difficulty Level</p>
-                <div class="difficulty-buttons">
-                    <button class="difficulty-btn easy" onclick="startGame('easy')">Easy</button>
-                    <button class="difficulty-btn medium" onclick="startGame('medium')">Medium</button>
-                    <button class="difficulty-btn hard" onclick="startGame('hard')">Hard</button>
-                </div>
-                <p class="controls-info">Arrow Keys / WASD to Move | Space to Pause</p>
-            </div>
-        </div>
 
-        <div id="game-container" class="game-hidden">
-            <div class="scoreboard">
-                <div class="score">
-                    <div class="score-label">You</div>
-                    <div class="score-value" id="player-score">0</div>
-                </div>
-                <div class="score">
-                    <div class="score-label" id="difficulty-label">AI</div>
-                    <div class="score-value" id="ai-score">0</div>
-                </div>
-            </div>
-            <div class="game-status" id="game-status"></div>
-            <canvas id="gameCanvas" width="800" height="400"></canvas>
-            <div class="game-info">
-                <p id="status-text">Arrow Keys / WASD to Move | Space to Pause</p>
-            </div>
-        </div>
+<div id="menu">
+    <h1>TABLE TENNIS PRO</h1>
 
-        <div id="game-over" class="modal hidden">
-            <div class="modal-content">
-                <h2 id="game-over-title">Game Over</h2>
-                <p id="game-over-message"></p>
-                <div class="final-score">
-                    <div><span id="final-player-score">0</span> - <span id="final-ai-score">0</span></div>
-                </div>
-                <button class="btn-primary" onclick="returnToMenu()">Return to Menu</button>
-            </div>
-        </div>
-    </div>
+    <label>Difficulty:</label>
+    <select id="difficulty">
+        <option value="beginner">Beginner</option>
+        <option value="intermediate">Intermediate</option>
+        <option value="advanced">Advanced</option>
+        <option value="pro">Pro Tour</option>
+    </select>
 
-    <script src="game.js"></script>
+    <label>Paddle Skin:</label>
+    <select id="paddleSkin">
+        <option value="wood">Wood</option>
+        <option value="carbon">Carbon</option>
+        <option value="neon">Neon</option>
+        <option value="pro">Pro Tour</option>
+    </select>
+
+    <label>Player Avatar:</label>
+    <select id="avatar">
+        <option value="classic">Classic</option>
+        <option value="robot">Robot</option>
+        <option value="shadow">Shadow</option>
+        <option value="neon">Neon</option>
+    </select>
+
+    <button id="startBtn">Start Game</button>
+</div>
+
+<canvas id="gameCanvas" width="900" height="500"></canvas>
+
+<script src="game.js"></script>
 </body>
 </html>
