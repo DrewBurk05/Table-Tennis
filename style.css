@@ -1,33 +1,728 @@
+/* ==================== GLOBAL STYLES ==================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
 body {
-    background: #0b1221;
+    background: linear-gradient(135deg, #0f1419 0%, #1a2a3a 100%);
+    color: #ffffff;
+    font-family: 'Arial', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+/* ==================== SCREEN SYSTEM ==================== */
+.screen {
+    display: none;
+    width: 100%;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+.screen.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ==================== MENU SCREEN ==================== */
+.menu-container {
+    text-align: center;
+    background: rgba(15, 20, 25, 0.95);
+    padding: 60px 40px;
+    border-radius: 20px;
+    border: 2px solid rgba(77, 150, 255, 0.3);
+    box-shadow: 0 0 40px rgba(77, 150, 255, 0.1);
+    max-width: 600px;
+    width: 90%;
+}
+
+.title {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #4D96FF, #FF6B6B);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 20px rgba(77, 150, 255, 0.5);
+}
+
+.subtitle {
+    font-size: 18px;
+    color: #aaa;
+    margin-bottom: 40px;
+}
+
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.menu-btn {
+    padding: 15px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #2a4a6a, #1a3a5a);
+    color: #fff;
+    border: 2px solid #4D96FF;
+}
+
+.menu-btn:hover {
+    background: linear-gradient(135deg, #3a5a7a, #2a4a6a);
+    box-shadow: 0 0 20px rgba(77, 150, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+.menu-btn.primary {
+    background: linear-gradient(135deg, #4D96FF, #3a7ad6);
+    font-size: 18px;
+    padding: 18px 40px;
+}
+
+.coin-display {
+    font-size: 20px;
+    font-weight: bold;
+    color: #FFD700;
+    margin-top: 20px;
+}
+
+/* ==================== DIFFICULTY SCREEN ==================== */
+.difficulty-container {
+    text-align: center;
+    background: rgba(15, 20, 25, 0.95);
+    padding: 60px 40px;
+    border-radius: 20px;
+    border: 2px solid rgba(77, 150, 255, 0.3);
+    max-width: 800px;
+    width: 90%;
+}
+
+.difficulty-container h2 {
+    font-size: 36px;
+    margin-bottom: 40px;
+    color: #4D96FF;
+}
+
+.difficulty-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.difficulty-btn {
+    padding: 20px;
+    border: 2px solid;
+    border-radius: 15px;
+    background: rgba(0, 0, 0, 0.3);
     color: white;
-    font-family: Arial, sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    font-size: 14px;
+}
+
+.difficulty-btn .emoji {
+    font-size: 32px;
+}
+
+.difficulty-btn .label {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.difficulty-btn .desc {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+.difficulty-btn.beginner {
+    border-color: #66BB6A;
+}
+
+.difficulty-btn.beginner:hover {
+    background: rgba(102, 187, 106, 0.2);
+    box-shadow: 0 0 20px rgba(102, 187, 106, 0.5);
+}
+
+.difficulty-btn.intermediate {
+    border-color: #4D96FF;
+}
+
+.difficulty-btn.intermediate:hover {
+    background: rgba(77, 150, 255, 0.2);
+    box-shadow: 0 0 20px rgba(77, 150, 255, 0.5);
+}
+
+.difficulty-btn.advanced {
+    border-color: #FFA726;
+}
+
+.difficulty-btn.advanced:hover {
+    background: rgba(255, 167, 38, 0.2);
+    box-shadow: 0 0 20px rgba(255, 167, 38, 0.5);
+}
+
+.difficulty-btn.expert {
+    border-color: #EF5350;
+}
+
+.difficulty-btn.expert:hover {
+    background: rgba(239, 83, 80, 0.2);
+    box-shadow: 0 0 20px rgba(239, 83, 80, 0.5);
+    transform: scale(1.05);
+}
+
+/* ==================== CUSTOMIZATION SCREEN ==================== */
+.customization-container {
+    background: rgba(15, 20, 25, 0.95);
+    padding: 60px 40px;
+    border-radius: 20px;
+    border: 2px solid rgba(77, 150, 255, 0.3);
+    max-width: 500px;
+    width: 90%;
     text-align: center;
 }
 
-#menu {
-    margin-top: 40px;
+.customization-container h2 {
+    font-size: 36px;
+    margin-bottom: 40px;
+    color: #4D96FF;
 }
 
-canvas {
-    display: none;
-    margin: auto;
-    border: 4px solid #00eaff;
-    background: #1a2a3d;
+.customization-section {
+    margin-bottom: 30px;
+    text-align: left;
 }
 
-select, button {
-    padding: 10px;
-    margin: 10px;
+.customization-section h3 {
+    margin-bottom: 15px;
+    color: #4D96FF;
     font-size: 18px;
 }
 
-button {
-    background: #00eaff;
-    border: none;
+#player-name {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #4D96FF;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    font-size: 16px;
+}
+
+#player-name::placeholder {
+    color: #888;
+}
+
+.avatar-options {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.avatar-option {
+    width: 50px;
+    height: 50px;
+    font-size: 32px;
+    border: 3px solid transparent;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.avatar-option:hover {
+    border-color: #4D96FF;
+    transform: scale(1.1);
+}
+
+.avatar-option.selected {
+    border-color: #4D96FF;
+    background: rgba(77, 150, 255, 0.3);
+    box-shadow: 0 0 20px rgba(77, 150, 255, 0.5);
+}
+
+#paddle-color {
+    width: 100%;
+    height: 50px;
+    border: 2px solid #4D96FF;
+    border-radius: 8px;
     cursor: pointer;
 }
 
-button:hover {
-    background: #00bcd4;
+/* ==================== PADDLE SHOP SCREEN ==================== */
+.shop-container {
+    background: rgba(15, 20, 25, 0.95);
+    padding: 40px 20px;
+    border-radius: 20px;
+    border: 2px solid rgba(77, 150, 255, 0.3);
+    max-width: 900px;
+    width: 95%;
+    text-align: center;
+}
+
+.coins-header {
+    font-size: 20px;
+    font-weight: bold;
+    color: #FFD700;
+    margin-bottom: 30px;
+}
+
+.paddle-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.paddle-card {
+    background: linear-gradient(135deg, rgba(77, 150, 255, 0.1), rgba(255, 107, 107, 0.1));
+    border: 2px solid #4D96FF;
+    border-radius: 15px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.paddle-card:hover {
+    box-shadow: 0 0 20px rgba(77, 150, 255, 0.5);
+    transform: translateY(-5px);
+}
+
+.paddle-card h4 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #4D96FF;
+}
+
+.paddle-card .stats {
+    font-size: 12px;
+    color: #aaa;
+    margin-bottom: 10px;
+}
+
+.paddle-card .price {
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFD700;
+    margin-bottom: 15px;
+}
+
+.paddle-btn {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.paddle-btn.available {
+    background: linear-gradient(135deg, #4D96FF, #3a7ad6);
+    color: white;
+}
+
+.paddle-btn.available:hover {
+    box-shadow: 0 0 15px rgba(77, 150, 255, 0.6);
+}
+
+.paddle-btn.owned {
+    background: #66BB6A;
+    color: white;
+}
+
+.paddle-btn.equipped {
+    background: #888;
+    color: white;
+    cursor: default;
+    opacity: 0.6;
+}
+
+/* ==================== STATS SCREEN ==================== */
+.stats-container {
+    background: rgba(15, 20, 25, 0.95);
+    padding: 40px 20px;
+    border-radius: 20px;
+    border: 2px solid rgba(77, 150, 255, 0.3);
+    max-width: 900px;
+    width: 95%;
+    text-align: center;
+}
+
+.stats-container h2 {
+    font-size: 36px;
+    margin-bottom: 40px;
+    color: #4D96FF;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, rgba(77, 150, 255, 0.1), rgba(0, 0, 0, 0.3));
+    border: 2px solid #4D96FF;
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    box-shadow: 0 0 15px rgba(77, 150, 255, 0.5);
+    transform: translateY(-3px);
+}
+
+.stat-card h4 {
+    font-size: 14px;
+    color: #aaa;
+    margin-bottom: 10px;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #4D96FF;
+}
+
+.stat-value.green {
+    color: #66BB6A;
+}
+
+.stat-value.red {
+    color: #EF5350;
+}
+
+.stat-value.blue {
+    color: #4D96FF;
+}
+
+.difficulty-breakdown {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 30px 0 40px 0;
+}
+
+.difficulty-breakdown-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid #4D96FF;
+    border-radius: 12px;
+    padding: 15px;
+}
+
+.difficulty-breakdown-card h4 {
+    color: #4D96FF;
+    margin-bottom: 10px;
+}
+
+.difficulty-breakdown-card p {
+    font-size: 14px;
+    color: #aaa;
+}
+
+/* ==================== GAME SCREEN ==================== */
+#game-screen {
+    flex-direction: column !important;
+    background: linear-gradient(135deg, #0f1419 0%, #1a2a3a 100%);
+}
+
+.game-hud {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background: rgba(0, 0, 0, 0.5);
+    border-bottom: 2px solid #4D96FF;
+    width: 100%;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.hud-left, .hud-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+}
+
+.hud-center {
+    text-align: center;
+}
+
+.score-board {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.score-item {
+    font-size: 32px;
+    font-weight: bold;
+    color: #4D96FF;
+    min-width: 50px;
+}
+
+.score-divider {
+    color: #aaa;
+    font-size: 20px;
+}
+
+#game-canvas {
+    border: 3px solid #4D96FF;
+    background: #16213e;
+    max-width: 100vw;
+    max-height: 85vh;
+    display: block;
+    margin: auto;
+}
+
+.pause-menu {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.95);
+    padding: 40px;
+    border-radius: 20px;
+    border: 3px solid #4D96FF;
+    z-index: 100;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(77, 150, 255, 0.5);
+}
+
+.pause-menu h2 {
+    font-size: 48px;
+    margin-bottom: 30px;
+    color: #4D96FF;
+}
+
+.pause-menu button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    background: linear-gradient(135deg, #4D96FF, #3a7ad6);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.pause-menu button:hover {
+    box-shadow: 0 0 20px rgba(77, 150, 255, 0.6);
+    transform: scale(1.05);
+}
+
+.pause-menu.hidden {
+    display: none;
+}
+
+.pause-text {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #aaa;
+    font-size: 14px;
+    opacity: 0.7;
+}
+
+/* ==================== GAME OVER SCREEN ==================== */
+.game-over-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 200;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.game-over-screen.hidden {
+    display: none;
+}
+
+.game-over-content {
+    background: linear-gradient(135deg, rgba(77, 150, 255, 0.1), rgba(255, 107, 107, 0.1));
+    border: 3px solid #4D96FF;
+    border-radius: 20px;
+    padding: 60px 40px;
+    text-align: center;
+    max-width: 600px;
+    box-shadow: 0 0 50px rgba(77, 150, 255, 0.5);
+}
+
+#game-over-title {
+    font-size: 48px;
+    margin-bottom: 30px;
+    color: #4D96FF;
+}
+
+.final-score {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin: 30px 0;
+}
+
+.final-score-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.final-score-item .label {
+    color: #aaa;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.final-score-item .score {
+    font-size: 48px;
+    font-weight: bold;
+    color: #4D96FF;
+}
+
+.vs {
+    font-size: 24px;
+    color: #aaa;
+}
+
+.coins-earned {
+    font-size: 24px;
+    font-weight: bold;
+    color: #FFD700;
+    margin: 20px 0;
+}
+
+/* ==================== BUTTON GROUPS ==================== */
+.button-group {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 12px 24px;
+    border: 2px solid #4D96FF;
+    border-radius: 10px;
+    background: rgba(77, 150, 255, 0.1);
+    color: #4D96FF;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.btn:hover {
+    background: rgba(77, 150, 255, 0.3);
+    box-shadow: 0 0 15px rgba(77, 150, 255, 0.5);
+}
+
+.btn.primary {
+    background: linear-gradient(135deg, #4D96FF, #3a7ad6);
+    color: white;
+}
+
+.btn.primary:hover {
+    box-shadow: 0 0 20px rgba(77, 150, 255, 0.6);
+    transform: scale(1.05);
+}
+
+.back-btn {
+    margin-top: 30px;
+    padding: 12px 24px;
+    background: rgba(255, 107, 107, 0.1);
+    border: 2px solid #FF6B6B;
+    border-radius: 10px;
+    color: #FF6B6B;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+    background: rgba(255, 107, 107, 0.3);
+    box-shadow: 0 0 15px rgba(255, 107, 107, 0.5);
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+@media (max-width: 768px) {
+    .title {
+        font-size: 36px;
+    }
+
+    .difficulty-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .game-hud {
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px 20px;
+    }
+
+    .score-board {
+        gap: 15px;
+    }
+
+    .score-item {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .title {
+        font-size: 28px;
+    }
+
+    .difficulty-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .paddle-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    #game-canvas {
+        width: 100%;
+        height: auto;
+    }
 }
